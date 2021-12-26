@@ -1,0 +1,84 @@
+Option Base 1
+Public Function CheckCellInRange(cell As Range, Range As Range) As Boolean
+'Ham nay kiem tra xem 1 cell co nam torng vung Range hay khong
+CheckCellInRange = False
+If cell.Row >= Range.Row And cell.Row <= Range.Row + Range.Rows.Count - 1 Then
+    If cell.Column >= Range.Column And cell.Column <= Range.Column + Range.Columns.Count - 1 Then
+        CheckCellInRange = True
+    End If
+End If
+End Function
+
+Public Function ClickOnMine(ClickCell As Range, MyArray As Variant) As Boolean
+Dim i As Integer
+ClickOnMine = False
+For i = LBound(MyArray) To UBound(MyArray)
+    If ClickCell.address = MyArray(i) Then
+        ClickOnMine = True
+        Exit Function
+    End If
+Next
+End Function
+Public Function WinCheck(BoardRange As Range, MineRange As Variant) As Boolean
+WinCheck = False
+Dim MineQuantity As Integer
+MineQuantity = Application.WorksheetFunction.CountIf(BoardRange, "M")
+If MineQuantity = UBound(MineRange) Then
+    WinCheck = True
+    Dim i As Integer
+    For i = LBound(MineRange) To UBound(MineRange)
+        If Range(MineRange(i)).value <> "M" Then
+            WinCheck = False
+        End If
+    Next
+End If
+
+End Function
+
+Public Function RemainMine(MineArray) As Integer
+'Ham nay dem xem con bao nhieu min chua go
+Dim FlagPlace As Integer
+FlagPlace = 0
+Dim i As Integer
+For i = LBound(MineArray) To UBound(MineArray)
+    If Range(MineArray(i)).value = "M" Then
+        FlagPlace = FlagPlace + 1
+    End If
+Next
+RemainMine = UBound(MineArray) - FlagPlace
+End Function
+
+
+Public Function MineCount(cell As Range, Minearr As Variant)
+'Ham nay dem xem co bao nhieu min xung quanh 1 o
+Dim N As Integer
+N = 0
+Dim i, j, k As Integer
+For i = LBound(Minearr) To UBound(Minearr)
+    For j = -1 To 1
+        For k = -1 To 1
+            If cell.Offset(j, k).address = Minearr(i) Then
+                N = N + 1
+            End If
+        Next
+    Next
+Next
+MineCount = N
+End Function
+
+
+Function IsInArray(StringValue As String, InArray As Variant) As Boolean
+'Ham nay de kiem tra mang co chua 1 gia tri cho truoc hay khong
+    IsInArray = Not IsError(Application.Match(StringValue, InArray, 0))
+End Function
+
+'Su kien Right Click de dat flag cho o co min
+Public Sub OnOffFlag(CurrentCell As Range)
+'Thu tuc nay de kiem tra o hien tai da gan flag chua. Neu da gan thi bo gan, neu chua thi gan flag
+If CurrentCell.value = "M" Then
+    CurrentCell.ClearContents
+    Else
+    CurrentCell.value = "M"
+End If
+End Sub
+
