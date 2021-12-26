@@ -1,0 +1,172 @@
+
+Public Sub ResizeCell()
+'Thu tuc nay de resize cac cell tro thanh hinh vuong
+With ActiveSheet
+    .Columns.ColumnWidth = 2.29
+    .Rows.RowHeight = 15
+End With
+End Sub
+Public Sub SetColor()
+'hu tuc nay de tao ra mot ban choi moi
+ActiveWindow.DisplayGridlines = False
+    With Range("A1:AG1").Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent5
+        .TintAndShade = -0.249946592608417
+        .PatternTintAndShade = 0
+    End With
+    With Range("AG1:AG19").Interior
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent5
+        .TintAndShade = -0.249946592608417
+        .PatternTintAndShade = 0
+    End With
+    With Range("A19:AG19").Interior
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent5
+        .TintAndShade = -0.249946592608417
+        .PatternTintAndShade = 0
+    End With
+    With Range("A1:A19").Interior
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent5
+        .TintAndShade = -0.249946592608417
+        .PatternTintAndShade = 0
+    End With
+    Columns("AG:AG").ColumnWidth = 0.5
+    Columns("A:A").ColumnWidth = 0.5
+    Rows("1:1").RowHeight = 4.5
+    Rows("19:19").RowHeight = 4.5
+'Call OriginalDecor(range("B2:AF18"))
+End Sub
+Public Sub ClearSheet()
+With ActiveSheet
+    .Cells.Clear
+End With
+End Sub
+
+Public Sub NoMineDecor(NomineCell As Range, MineCount As Integer)
+'Trang tri cho o khong co min, mau chu se dua tren so min xung quanh
+Dim ColorCode As Double
+Select Case MineCount
+    Case Is = 1
+        ColorCode = 55
+    Case Is = 2
+        ColorCode = 41
+    Case Is = 3
+        ColorCode = 5
+    Case Is = 4
+        ColorCode = 45
+    Case Is = 5
+        ColorCode = 3
+    Case Is = 6
+        ColorCode = 9
+    Case Is = 7
+        ColorCode = 21
+    Case Is = 8
+        ColorCode = 56
+End Select
+With NomineCell
+    .HorizontalAlignment = xlCenter
+    .VerticalAlignment = xlCenter
+    .WrapText = False
+End With
+With NomineCell.Font
+    .Name = "Arial"
+    .Bold = True
+    .ColorIndex = ColorCode
+End With
+With NomineCell.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent1
+        .TintAndShade = 0.599963377788629
+        .PatternTintAndShade = 0
+End With
+With NomineCell.Borders
+    .LineStyle = xlContinuous
+    .ThemeColor = 5
+    .TintAndShade = -0.499984740745262
+    .Weight = xlThin
+End With
+End Sub
+Public Sub MineDecor(MineCell As Range)
+'Trang tri cho o co min
+With MineCell
+    .HorizontalAlignment = xlCenter
+    .VerticalAlignment = xlCenter
+    .WrapText = False
+End With
+With MineCell.Font
+    .Size = 18
+    .Name = "Wingdings"
+    .ColorIndex = 3
+    .Bold = True
+End With
+With MineCell.Interior
+    .ThemeColor = xlThemeColorAccent1
+    .TintAndShade = 0.1
+    .PatternTintAndShade = 0
+End With
+With MineCell.Borders
+    .LineStyle = xlContinuous
+    .ThemeColor = 5
+    .TintAndShade = -0.499984740745262
+    .Weight = xlThin
+End With
+End Sub
+
+Public Sub OriginalDecor(OriginalCell As Range)
+OriginalCell.Clear
+'Trang tri cho o ban dau chua mo
+With OriginalCell
+    .HorizontalAlignment = xlCenter
+    .VerticalAlignment = xlCenter
+End With
+With OriginalCell.Interior
+    .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        '.Color = 14540253
+        .ThemeColor = xlThemeColorDark2
+        .TintAndShade = -0.249946592608417
+        .PatternTintAndShade = 0
+End With
+With OriginalCell.Borders(xlInsideVertical)
+    .LineStyle = xlContinuous
+    .ThemeColor = 5
+    .TintAndShade = -0.499984740745262
+    .Weight = xlThin
+End With
+With OriginalCell.Borders(xlInsideHorizontal)
+    .LineStyle = xlContinuous
+    .ThemeColor = 5
+    .TintAndShade = -0.499984740745262
+    .Weight = xlThin
+End With
+End Sub
+Public Sub FlagDecor(FlagCell As Range)
+'Trang tri cho o gan co
+With FlagCell
+    .HorizontalAlignment = xlCenter
+    .VerticalAlignment = xlCenter
+    .WrapText = False
+End With
+With FlagCell.Font
+    .Size = 13
+    .Name = "Wingdings"
+    .ColorIndex = 9
+    .Bold = True
+End With
+With FlagCell.Interior
+    .ThemeColor = xlThemeColorAccent1
+    .TintAndShade = 0.1
+    .PatternTintAndShade = 0
+End With
+With FlagCell.Borders
+    .LineStyle = xlContinuous
+    .ThemeColor = 5
+    .TintAndShade = -0.499984740745262
+    .Weight = xlThin
+End With
+End Sub
