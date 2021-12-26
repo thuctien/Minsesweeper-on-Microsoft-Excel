@@ -1,0 +1,126 @@
+Option Explicit
+Public Minearr As Variant
+Public TotalMine As Integer
+'Public Board As Variant
+Const VK_LBUTTON = &H1
+'Option Base 1
+Private Declare PtrSafe Function GetAsyncKeyState Lib "user32" (ByVal vKey As Long) As Long
+
+Private Sub Worksheet_Activate()
+Application.ScreenUpdating = False
+With Sheets("Minesweeper")
+    ClearSheet
+    .Range("B20").value = "Press Ctrl+T to reset game."
+    .Range("B21").value = "Game Minesweeper. Written by Nguyen Thuc Tien- thuctien99x1b@gmail.com"
+'Tao cac cell hinh vuong
+    ResizeCell
+'To mau cho cac o o bien
+    SetColor
+    Call OriginalDecor(Range("B2:AF18"))
+End With
+Application.ScreenUpdating = True
+'Tao mang chua dia chi cac o co min
+Minearr = Empty
+Minearr = ArrangeMine(Range("B2:AF18"), MineQuantity(17 * 31))
+TotalMine = UBound(Minearr)
+Range("AH2").value = TotalMine
+End Sub
+Private Sub Worksheet_BeforeRightClick(ByVal Target As Range, Cancel As Boolean)
+Cancel = True
+End Sub
+
+Private Sub Worksheet_SelectionChange(ByVal Target As Range)
+'Neu chon nhieu cell 1 lan thi khong lam gi ca
+If Target.Cells.Count > 1 Then
+    Exit Sub
+End If
+If CheckCellInRange(Target, Range("B2:AF18")) = False Then
+    Exit Sub
+End If
+Dim MouseClick As Long
+MouseClick = GetAsyncKeyState(VK_LBUTTON)
+If CBool(MouseClick And &H1) Then
+    If IsInArray(Target.address, Minearr) = True Then
+        ShowAllMine
+        Dim Replay As VbMsgBoxResult
+        Replay = MsgBox("Game over. Do you want to play again?", vbOKCancel)
+        If Replay = vbOK Then
+            Reloadgame
+            Else
+            ThisWorkbook.Close False
+            Application.Quit
+        End If
+        Exit Sub
+    End If
+    Call LeftClickOnCell(Target)
+    Else
+        Call OnOffFlag(Target)
+            If Target.value = "M" Then
+                Call FlagDecor(Target)
+                Else
+                    Call OriginalDecor(Target)
+            End If
+End If
+    
+Range("A1").Select
+If WinCheck(Range("B2:AF18"), Minearr) = True Then
+    MsgBox ("You win. Congratulation")
+End If
+Range("AH2").value = RemainMine(Minearr)
+End Sub
+
+Public Sub LeftClickOnCell(CellClick As Range)
+'Thu tuc nay de mo 1 o khong chua min
+    If CheckCellInRange(CellClick, Range("B2:AF18")) = False Then
+        Exit Sub
+    End If
+    If CellClick.Interior.ThemeColor = xlThemeColorAccent1 Then
+        Exit Sub
+    End If
+    Dim MineAround As Integer
+    MineAround = MineCount(CellClick)
+    If MineAround > 0 Then
+        CellClick.value = MineAround
+        Call NoMineDecor(CellClick, MineAround)
+        Else
+        Call NoMineDecor(CellClick, 0)
+        Call LeftClickOnCell(CellClick.Offset(1, 0))
+        Call LeftClickOnCell(CellClick.Offset(-1, 0))
+        Call LeftClickOnCell(CellClick.Offset(0, 1))
+        Call LeftClickOnCell(CellClick.Offset(0, -1))
+        Call LeftClickOnCell(CellClick.Offset(-1, -1))
+        Call LeftClickOnCell(CellClick.Offset(1, 1))
+        Call LeftClickOnCell(CellClick.Offset(-1, 1))
+        Call LeftClickOnCell(CellClick.Offset(1, -1))
+    End If
+End Sub
+
+Public Sub ShowAllMine()
+'Thu tuc nay de lat tat ca cac o co min khi game over
+Dim i As Integer
+For i = LBound(Minearr) To UBound(Minearr)
+    Call MineDecor(Range(Minearr(i)))
+    Range(Minearr(i)).value = "N"
+Next
+End Sub
+Public Function MineCount(Acell As Range)
+'Ham nay dem xem co bao nhieu min xung quanh 1 o
+Dim N As Integer
+N = 0
+Dim i, j, k As Integer
+For i = LBound(Minearr) To UBound(Minearr)
+    For j = -1 To 1
+        For k = -1 To 1
+            If Acell.Offset(j, k).address = Minearr(i) Then
+                N = N + 1
+            End If
+        Next
+    Next
+Next
+MineCount = N
+End Function
+Public Sub Reloadgame()
+Application.ScreenUpdating = False
+Sheets("Sheet1").Activate
+Application.ScreenUpdating = True
+End Sub
