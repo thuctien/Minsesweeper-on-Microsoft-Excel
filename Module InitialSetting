@@ -1,0 +1,40 @@
+
+Public Function MineQuantity(TotalCell As Integer) As Integer
+'Ham nay se cho ra ngau nhien so luong min trong khoang 15% den 20% so luong o
+Dim k As Integer
+k = Application.WorksheetFunction.RandBetween(15, 20)
+Dim Mine As Integer
+Mine = Int(k * TotalCell / 100)
+MineQuantity = Mine
+End Function
+
+Public Function ArrangeMine(InRange As Range, MineCount As Integer) As Variant
+'Thu tuc nay se bo tri min vao Range theo so luong da cho va tra ve mot mang chua dia chi cac o co min
+Dim Mydict As Object
+Set Mydict = CreateObject("Scripting.Dictionary")
+Dim Mycell As Range
+Dim address As String
+Dim i As Integer
+i = 1
+'Tao ra 1 dict chua dia chi tat ca cac o trong vung
+For Each Mycell In InRange
+    address = Mycell.address(True, True)
+    Mydict.Add i, address
+    i = i + 1
+Next Mycell
+Dim MineArrangeArr As Variant
+'Mang MineArrangeArr se chua dia chi cac o co chua min
+ReDim MineArrangeArr(1 To MineCount)
+i = 1
+Do Until i > MineCount
+    Dim RandomMine As Integer
+    RandomMine = Application.WorksheetFunction.RandBetween(1, InRange.Cells.Count)
+    If Mydict.exists(RandomMine) Then
+        MineArrangeArr(i) = Mydict(RandomMine)
+        i = i + 1
+        Mydict.Remove (RandomMine)
+    End If
+Loop
+ArrangeMine = MineArrangeArr
+End Function
+
